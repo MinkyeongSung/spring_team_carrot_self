@@ -20,18 +20,16 @@ public class ProductService {
     private final ProductJPARepository productJPARepository;
     private final ProductPicJPARepository productPicJPARepository;
 
-    // (기능1) 상품 목록보기
+    // 상품 목록보기
     public List<ProductResponse.FindAllDTO> findAll() {
         List<Product> dtos = productJPARepository.findAll();
-
+        System.out.println("상품테스트 : " + dtos);
         List<ProductResponse.FindAllDTO> responseDTO = dtos.stream()
                 .map(t -> new ProductResponse.FindAllDTO(t))
                 .collect(Collectors.toList());
-                
-
+        System.out.println("상품테스트 2 : " + responseDTO);
         return responseDTO;
     }
-
 
     // 상품 상세보기
     public ProductResponse.FindByIdDTO FindById(Integer id) {
@@ -44,4 +42,15 @@ public class ProductService {
         return new ProductResponse.FindByIdDTO(product, productPic);
     }
 
+    // 상품 등록
+    @Transactional
+    public void saveProductWithProductPics(ProductRequest.ProductRequestDTO productRequestDTO) {
+        Product product = productJPARepository.save(productRequestDTO.toEntity());
+        List<ProductPic> productPics = productRequestDTO.getProductPics();
+
+        for (ProductPic productPic : productPics) {
+            System.out.println(productPic.getProductPicUrl());
+            productPicJPARepository.save(productPic);
+        }
+    }
 }
