@@ -9,9 +9,9 @@ import com.example.team_project.user.User;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.ToString;
 
-
-    // TODO 1: 메서드 네이밍 수정 필요
+// TODO 1: 메서드 네이밍 수정 필요
 public class ProductResponse {
 
     // 상품 리스트
@@ -112,4 +112,41 @@ public class ProductResponse {
             }
         }
     }
+
+    @Getter
+    @Setter
+    @ToString
+    public static class ProductWriteResDTO {
+        private String productName;
+        private String productDescription;
+        private Integer productPrice;
+        private Integer userId;
+        private List<ProductPicDTO> productPics;
+        private Timestamp createdAt;
+
+        public ProductWriteResDTO(Product productWrite) {
+            this.productName = productWrite.getProductName();
+            this.productDescription = productWrite.getProductDescription();
+            this.productPrice = productWrite.getProductPrice();
+            this.userId = productWrite.getUser().getId();
+            this.productPics = productWrite.getProductpics().stream()
+                    .map(t -> new ProductPicDTO(t))
+                    .collect(Collectors.toList());
+            this.createdAt = productWrite.getProductCreatedAt();
+        }
+
+        @Getter
+        @Setter
+        public static class ProductPicDTO {
+            private Integer id;
+            private String productPicUrl;
+
+            public ProductPicDTO(ProductPic productPic) {
+                this.id = productPic.getId();
+                this.productPicUrl = productPic.getProductPicUrl();
+            }
+        }
+
+    }
+
 }

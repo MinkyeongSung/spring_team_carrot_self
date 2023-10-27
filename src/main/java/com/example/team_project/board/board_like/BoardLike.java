@@ -24,6 +24,7 @@ public class BoardLike {
     private Board board;
 
     @Builder
+
     public BoardLike(Integer id, User user, Board board) {
         this.id = id;
         this.user = user;

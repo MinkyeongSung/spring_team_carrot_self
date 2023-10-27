@@ -51,7 +51,7 @@ public class BoardResponse {
             this.boardPics = board.getBoardpics().stream()
                     .limit(1)
                     .map(b -> new BoardPicDTO(b))
-                    .collect(Collectors.toList());
+                    .collect(Collectors.toList());            
         }
 
         @Getter
