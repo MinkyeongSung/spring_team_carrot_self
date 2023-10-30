@@ -75,7 +75,7 @@ public class BoardService {
         return new BoardResponse.BoardWriteRespDTO(board, boardPics, boardcCategory);
     }
 
-        // 동네 생활 게시글 수정
+    // 동네 생활 게시글 수정
     @Transactional
     public BoardResponse.BoardUpdateRespDTO updateBoardWithBoardPics(Integer id, BoardUpdateReqDTO updateReqDTO) {
         Board board = boardJPARepository.findById(id)
@@ -100,5 +100,18 @@ public class BoardService {
         boardJPARepository.save(board);
 
         return new BoardResponse.BoardUpdateRespDTO(board, boardPics);
+    }
+
+    // 동네 생활 게시글 삭제
+    @Transactional
+    public void deleteBoard(int boardId) {
+        // 먼저 해당 게시글의 이미지를 삭제
+        List<BoardPic> boardPics = boardPicJPARepository.findByBoardId(boardId);
+        for (BoardPic boardPic : boardPics) {
+            boardPicJPARepository.delete(boardPic);
+        }
+
+        // 그 다음 게시글을 삭제
+        boardJPARepository.deleteById(boardId);
     }
 }

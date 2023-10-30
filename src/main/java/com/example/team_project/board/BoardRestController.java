@@ -3,6 +3,7 @@ package com.example.team_project.board;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -54,5 +55,17 @@ public class BoardRestController {
             @RequestBody BoardUpdateReqDTO updateReqDTO) {
         BoardResponse.BoardUpdateRespDTO responseDTO = boardService.updateBoardWithBoardPics(id, updateReqDTO);
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
+    }
+
+        
+    // 동네생활 게시글 삭제
+    @PostMapping("/boards/delete/{id}")
+    public ResponseEntity<?> deleteBoard(@PathVariable Integer id) {
+        try {
+            boardService.deleteBoard(id);
+            return ResponseEntity.ok().body(ApiUtils.success("ok"));
+        } catch (Exception e) {
+            return new ResponseEntity<>("게시글 삭제 실패", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
