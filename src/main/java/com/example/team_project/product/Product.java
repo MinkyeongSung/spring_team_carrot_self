@@ -22,7 +22,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import org.hibernate.annotations.CreationTimestamp;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -41,13 +41,14 @@ public class Product {
 
     private Integer productPrice;
 
+    @CreationTimestamp
     private Timestamp productCreatedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private User user;
 
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
-    private List<ProductPic> productpics = new ArrayList<>();
+    private List<ProductPic> productPics = new ArrayList<>();
 
     @Builder
     public Product(Integer id, String productName, String productDescription, Integer productPrice,
@@ -59,25 +60,4 @@ public class Product {
         this.productCreatedAt = productCreatedAt;
         this.user = user;
     }
-
-    // // 2. 생성자 몰아넣기
-    //     public void setUpdate(String productName, String productDescription, Integer productPrice) {
-    //     this.productName = productName;
-    //     this.productDescription = productDescription;
-    //     this.productPrice = productPrice;
-    // }
-
-    // // 1. 하나씩 생성자.
-    // public void setProductName(String productName) {
-    //     this.productName = productName;
-    // }
-
-    // public void setProductDescription(String productDescription) {
-    //     this.productDescription = productDescription;
-    // }
-
-    // public void setProductPrice(Integer productPrice) {
-    //     this.productPrice = productPrice;
-    // }
-
 }

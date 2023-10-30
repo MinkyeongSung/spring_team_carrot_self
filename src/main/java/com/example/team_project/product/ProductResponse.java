@@ -9,29 +9,27 @@ import com.example.team_project.user.User;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
 
-// TODO 1: 메서드 네이밍 수정 필요
 public class ProductResponse {
 
     // 상품 리스트
     @Getter
     @Setter
-    public static class FindAllDTO {
-        private int id;
+    public static class ProductListRespDTO {
+        private Integer id;
         private String productName;
         private Integer productPrice;
         private Timestamp productCreatedAt;
         private UserDTO user;
         private List<ProductPicDTO> productPics;
 
-        public FindAllDTO(Product product) {
+        public ProductListRespDTO(Product product) {
             this.id = product.getId();
             this.productName = product.getProductName();
             this.productPrice = product.getProductPrice();
             this.productCreatedAt = product.getProductCreatedAt();
             this.user = new UserDTO(product.getUser());
-            this.productPics = product.getProductpics().stream()
+            this.productPics = product.getProductPics().stream()
                     .limit(1)
                     .map(p -> new ProductPicDTO(p))
                     .collect(Collectors.toList());
@@ -40,11 +38,11 @@ public class ProductResponse {
         @Getter
         @Setter
         public static class ProductPicDTO {
-            private Integer id;
+            private Integer productPicId;
             private String productPicUrl;
 
             public ProductPicDTO(ProductPic productPic) {
-                this.id = productPic.getId();
+                this.productPicId = productPic.getId();
                 this.productPicUrl = productPic.getProductPicUrl();
             }
         }
@@ -52,11 +50,11 @@ public class ProductResponse {
         @Getter
         @Setter
         public static class UserDTO {
-            private Integer id;
+            private Integer userId;
             private String location;
 
             public UserDTO(User user) {
-                this.id = user.getId();
+                this.userId = user.getId();
                 this.location = user.getLocation();
             }
         }
@@ -65,35 +63,36 @@ public class ProductResponse {
     // 상품상세보기
     @Getter
     @Setter
-    public static class FindByIdDTO {
+    public static class ProductDetailRespDTO {
         private Integer id;
         private String productName;
         private String productDescription;
         private Integer productPrice;
         private Timestamp createdAt;
-        private List<ProductPicDTO> ProductPics;
         private UserDTO user;
+        private List<ProductPicDTO> productPics;
 
-        public FindByIdDTO(Product product, List<ProductPic> productPics) {
+        public ProductDetailRespDTO(Product product, List<ProductPic> productPics) {
             this.id = product.getId();
             this.productName = product.getProductName();
             this.productDescription = product.getProductDescription();
             this.productPrice = product.getProductPrice();
             this.createdAt = product.getProductCreatedAt();
-            ProductPics = productPics.stream().map(t -> new ProductPicDTO(t)).collect(Collectors.toList());
             this.user = new UserDTO(product.getUser());
+            this.productPics = productPics.stream().map(t -> new ProductPicDTO(t)).collect(Collectors.toList());
+
         }
 
         @Getter
         @Setter
         public static class UserDTO {
-            private Integer id;
+            private Integer userId;
             private String location;
             private String username;
             private String userPicUrl;
 
             public UserDTO(User user) {
-                this.id = user.getId();
+                this.userId = user.getId();
                 this.username = user.getUsername();
                 this.location = user.getLocation();
                 this.userPicUrl = user.getUserPicUrl();
@@ -103,50 +102,97 @@ public class ProductResponse {
         @Getter
         @Setter
         public static class ProductPicDTO {
-            private Integer id;
+            private Integer productPicId;
             private String productPicUrl;
 
-            public ProductPicDTO(ProductPic productPic) {
-                this.id = productPic.getId();
-                this.productPicUrl = productPic.getProductPicUrl();
+            public ProductPicDTO(ProductPic productPicDTOs) {
+                this.productPicId = productPicDTOs.getId();
+                this.productPicUrl = productPicDTOs.getProductPicUrl();
             }
         }
     }
 
+    // 상품 등록
     @Getter
     @Setter
-    @ToString
-    public static class ProductWriteResDTO {
+    public static class ProductWriteRespDTO{
+        private Integer id;
         private String productName;
         private String productDescription;
         private Integer productPrice;
-        private Integer userId;
-        private List<ProductPicDTO> productPics;
         private Timestamp createdAt;
+        private UserDTO user;
+        private List<ProductPicDTO> productPics;
 
-        public ProductWriteResDTO(Product productWrite) {
-            this.productName = productWrite.getProductName();
-            this.productDescription = productWrite.getProductDescription();
-            this.productPrice = productWrite.getProductPrice();
-            this.userId = productWrite.getUser().getId();
-            this.productPics = productWrite.getProductpics().stream()
-                    .map(t -> new ProductPicDTO(t))
-                    .collect(Collectors.toList());
-            this.createdAt = productWrite.getProductCreatedAt();
+        public ProductWriteRespDTO(Product product, List<ProductPic> productPics) {
+            this.id = product.getId();
+            this.productName = product.getProductName();
+            this.productDescription = product.getProductDescription();
+            this.productPrice = product.getProductPrice();
+            this.createdAt = product.getProductCreatedAt();
+            this.user = new UserDTO(product.getUser());
+            this.productPics = productPics.stream().map(p -> new ProductPicDTO(p)).collect(Collectors.toList());
         }
 
         @Getter
         @Setter
-        public static class ProductPicDTO {
-            private Integer id;
+        public static class ProductPicDTO{
+            private Integer productPicId;
             private String productPicUrl;
 
             public ProductPicDTO(ProductPic productPic) {
-                this.id = productPic.getId();
+                this.productPicId = productPic.getId();
                 this.productPicUrl = productPic.getProductPicUrl();
             }
         }
 
+        @Getter
+        @Setter
+        public static class UserDTO{
+            private Integer userId;
+            private String username;
+            private String location;
+
+            public UserDTO(User user) {
+                this.userId = user.getId();
+                this.username = user.getUsername();
+                this.location = user.getLocation();
+            }
+        }
     }
 
+    // 상품 수정        
+    @Getter
+    @Setter
+    public static class ProductUpdateRespDTO{
+        private Integer id;
+        private String productName;
+        private String productDescription;
+        private Integer productPrice;
+        private Timestamp createdAt;
+        private List<ProductPicDTO> productPics;
+
+        public ProductUpdateRespDTO(Product product, List<ProductPic> productPics) {
+            this.id = product.getId();
+            this.productName = product.getProductName();
+            this.productDescription = product.getProductDescription();
+            this.productPrice = product.getProductPrice();
+            this.createdAt = product.getProductCreatedAt();
+            this.productPics = productPics.stream().map(p -> new ProductPicDTO(p)).collect(Collectors.toList());
+        }
+
+        @Getter
+        @Setter
+        public static class ProductPicDTO{
+            private Integer productPicId;
+            private String productPicUrl;
+
+            public ProductPicDTO(ProductPic productPic) {
+                this.productPicId = productPic.getId();
+                this.productPicUrl = productPic.getProductPicUrl();
+            }
+        }
+    }
 }
+
+

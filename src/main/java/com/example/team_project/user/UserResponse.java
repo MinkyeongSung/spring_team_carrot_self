@@ -3,32 +3,45 @@ package com.example.team_project.user;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Timestamp;
+
 public class UserResponse {
 
     @Getter
     @Setter
-    public static class LoginResponseDTO {
+    public static class UserJoinRespDTO {
+        private Integer id;
         private String username;
         private String password;
+        private String email;
+        private Timestamp createdAt;
 
-        public LoginResponseDTO(UserRequest.LoginDTO loginDTO) {
-            this.username = loginDTO.getUsername();
+        public UserJoinRespDTO(User user) {
+            this.id = user.getId();
+            this.username = user.getUsername();
             this.password = null;
+            this.email = user.getEmail();
+            this.createdAt = user.getUserCreatedAt();
+
         }
     }
 
     @Getter
     @Setter
-    public static class JoinResponseDTO {
+    public static class UserLoginRespDTO {
+        private Integer id;
         private String username;
         private String password;
-        private String email;
+        private Timestamp createdAt;
+        private String jwt;
 
-        public JoinResponseDTO(UserRequest.JoinDTO requestDTO) {
-            this.username = requestDTO.getUsername();
+        public UserLoginRespDTO(User user, String jwt) {
+            this.id = user.getId();
+            this.username = user.getUsername();
             this.password = null;
-            this.email = requestDTO.getEmail();
-
+            this.createdAt = user.getUserCreatedAt();
+            this.jwt = jwt;
         }
     }
+
 }

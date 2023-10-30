@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.sql.Timestamp;
@@ -26,12 +27,14 @@ public class User{
 
     private String email;
 
+    @Lob
     private String userPicUrl;
 
     private String location;
 
     private Boolean distinguish;
 
+    @CreationTimestamp
     private Timestamp userCreatedAt;
 
     @Builder

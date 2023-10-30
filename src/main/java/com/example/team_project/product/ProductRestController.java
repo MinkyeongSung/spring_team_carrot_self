@@ -1,12 +1,9 @@
 package com.example.team_project.product;
 
-import java.util.List;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,42 +12,43 @@ import com.example.team_project.product.ProductRequest.ProductUpdateReqDTO;
 
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @RestController
 public class ProductRestController {
 
     private final ProductService productService;
 
+
     // 상품 목록보기
     @GetMapping("/products")
-    public ResponseEntity<?> findAll() {
-        return ResponseEntity.ok().body(ApiUtils.success(productService.findAll()));
+    public ResponseEntity<?> ProductList() {
+        List<ProductResponse.ProductListRespDTO> responseDTO = productService.findAll();
+        return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
 
     // 상품상세보기
-    @GetMapping("/product/{id}")
-    public ResponseEntity<?> FindById(@PathVariable Integer id) {
-        ProductResponse.FindByIdDTO responseDTO = productService.FindById(id);
+    @GetMapping("/products/{id}")
+    public ResponseEntity<?> ProductDetail(@PathVariable Integer id) {
+        ProductResponse.ProductDetailRespDTO responseDTO = productService.FindById(id);
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
 
     // 상품 등록
-    @PostMapping("/product/write")
+    @PostMapping("/products/write")
     public ResponseEntity<?> WriteProduct(@RequestBody ProductRequest.ProductWriteReqDTO productWriteReqDTO) {
-        // productService.saveProductWithProductPics(productWriteReqDTO);
-        
-        List<ProductResponse.ProductWriteResDTO> responseDTO = productService
-                .saveProductWithProductPics(productWriteReqDTO);
-
+        ProductResponse.ProductWriteRespDTO responseDTO = productService.saveProductWithProductPics(productWriteReqDTO);
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
 
     // 상품 수정
-    @PostMapping("/product/update/{id}")
+    @PostMapping("/products/update/{id}")
     public ResponseEntity<?> updateProduct(@PathVariable Integer id,
             @RequestBody ProductUpdateReqDTO productUpdateReqDTO) {
-        productService.updateProductWithProductPics(id, productUpdateReqDTO);
-        return ResponseEntity.ok().body(ApiUtils.success("ok"));
+        ProductResponse.ProductUpdateRespDTO responseDTO = productService.updateProductWithProductPics(id, productUpdateReqDTO);
+        return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
+
     }
 
     // 상품 삭제

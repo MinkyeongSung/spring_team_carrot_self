@@ -1,6 +1,5 @@
 package com.example.team_project.product;
 
-import java.util.Optional;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -9,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.example.team_project._core.erroes.exception.Exception404;
 import com.example.team_project.product.ProductRequest.ProductUpdateReqDTO;
-import com.example.team_project.product.ProductRequest.ProductWriteReqDTO;
 import com.example.team_project.product.product_pic.ProductPic;
 import com.example.team_project.product.product_pic.ProductPicJPARepository;
 
@@ -23,84 +21,80 @@ public class ProductService {
     private final ProductJPARepository productJPARepository;
     private final ProductPicJPARepository productPicJPARepository;
 
-    // 상품 목록보기
-    public List<ProductResponse.FindAllDTO> findAll() {
+    // 상품 리스트
+    public List<ProductResponse.ProductListRespDTO> findAll() {
         List<Product> dtos = productJPARepository.findAll();
 
-        List<ProductResponse.FindAllDTO> responseDTO = dtos.stream()
-                .map(t -> new ProductResponse.FindAllDTO(t))
+        List<ProductResponse.ProductListRespDTO> responseDTO = dtos.stream()
+                .distinct()
+                .map(p -> {
+                    ProductResponse.ProductListRespDTO productDTO = new ProductResponse.ProductListRespDTO(p);
+                    List<ProductResponse.ProductListRespDTO.ProductPicDTO> productPicDTOs = p.getProductPics().isEmpty()
+                            ? null
+                            : p.getProductPics().stream()
+                                    .limit(1)
+                                    .map(pp -> new ProductResponse.ProductListRespDTO.ProductPicDTO(pp))
+                                    .collect(Collectors.toList());
+                    productDTO.setProductPics((productPicDTOs));
+                    return productDTO;
+                })
                 .collect(Collectors.toList());
 
         return responseDTO;
     }
 
     // 상품 상세보기
-    public ProductResponse.FindByIdDTO FindById(Integer id) {
+    public ProductResponse.ProductDetailRespDTO FindById(Integer id) {
 
         Product product = productJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("상품을 찾을 수 없습니다. ID: " + id));
 
-        List<ProductPic> productPic = productPicJPARepository.findByProductId(product.getId());
-
-        return new ProductResponse.FindByIdDTO(product, productPic);
+        List<ProductPic> productPics = productPicJPARepository.findByProductId(product.getId());
+        // TODO: productPics에 값이 없으면 빈 리스트가 아닌 null이 출력되게 수정해야 함
+        return new ProductResponse.ProductDetailRespDTO(product, productPics);
     }
 
     // 상품 등록
     @Transactional
-    public List<ProductResponse.ProductWriteResDTO> saveProductWithProductPics(
+    public ProductResponse.ProductWriteRespDTO saveProductWithProductPics(
             ProductRequest.ProductWriteReqDTO productWriteReqDTO) {
         Product product = productJPARepository.save(productWriteReqDTO.toEntity());
-        System.out.println(product.getId());
-        List<ProductPic> productPics = productWriteReqDTO.getProductPics();
+        List<String> productPicList = productWriteReqDTO.getProductPics();
 
-        for (ProductPic productPic : productPics) {
-            System.out.println(productPic.getProductPicUrl());
-            productPicJPARepository.save(productPic);
+        for (String productPic : productPicList) {
+            productPicJPARepository.mSave(productPic, product.getId());
         }
+        List<ProductPic> productPics = productPicJPARepository.findByProductId(product.getId());
 
-        // Optional<Product> dtos = productJPARepository.findById(product.getId());
-        List<ProductPic> productPic = productPicJPARepository.findByProductId(product.getId());
-        // return new ProductResponse.FindByIdDTO(product, productPic);
-
-        Optional<Product> dtos = productJPARepository.findById(product.getId());
-        List<ProductResponse.ProductWriteResDTO> responseDTO = dtos.stream()
-        .map(t -> new ProductResponse.ProductWriteResDTO(t))
-        .collect(Collectors.toList());
-        return responseDTO;
+        return new ProductResponse.ProductWriteRespDTO(product, productPics);
+      
     }
 
     // 상품 수정
     @Transactional
-    public void updateProductWithProductPics(Integer id, ProductUpdateReqDTO productUpdateReqDTO) {
+    public ProductResponse.ProductUpdateRespDTO updateProductWithProductPics(Integer id,
+            ProductUpdateReqDTO productUpdateReqDTO) {
         Product product = productJPARepository.findById(id)
                 .orElseThrow(() -> new Exception404("게시글을 찾을 수 없습니다. " + id));
 
-        productJPARepository.updateProduct(
+        productJPARepository.mUpdateProduct(
                 product.getId(),
                 productUpdateReqDTO.getProductPrice(),
                 productUpdateReqDTO.getProductDescription(),
                 productUpdateReqDTO.getProductName());
 
-        // 하나씩
-        // product.setProductName(productUpdateReqDTO.getProductName());
-        // product.setProductDescription(productUpdateReqDTO.getProductDescription());
-        // product.setProductPrice(productUpdateReqDTO.getProductPrice());
-
-        // 한방에
-        // product.setUpdate(
-        // productUpdateReqDTO.getProductName(),
-        // productUpdateReqDTO.getProductDescription(),
-        // productUpdateReqDTO.getProductPrice());
-
         List<ProductPic> productPics = productUpdateReqDTO.getProductPics();
 
         for (ProductPic productPic : productPics) {
-            System.out.println(productPic.getProductPicUrl());
-            // productPicJPARepository.updateProductPic(productPic);
             productPicJPARepository.updateProductPic(product.getId(),
                     productPic.getProductPicUrl());
         }
+        
+        List<ProductPic> productPicsUpdate = productPicJPARepository.findByProductId(product.getId());
+
+        return new ProductResponse.ProductUpdateRespDTO(product, productPicsUpdate);
     }
+
 }
 
 // @Transactional
