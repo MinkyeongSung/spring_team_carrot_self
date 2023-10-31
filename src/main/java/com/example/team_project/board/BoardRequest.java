@@ -35,6 +35,7 @@ public class BoardRequest {
 
     }
 
+    // 동네 생활 게시글 수정
     @Getter
     @Setter
     @ToString

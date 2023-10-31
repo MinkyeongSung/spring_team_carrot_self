@@ -1,5 +1,6 @@
 package com.example.team_project.board;
 
+import lombok.Getter;
 
 import java.util.List;
 
@@ -22,15 +23,13 @@ public class BoardRestController {
 
     private final BoardService boardService;
 
-
     // 동네생활 전체보기
     @GetMapping("/boards")
-    public ResponseEntity<?> BoardList(){
+    public ResponseEntity<?> BoardList() {
         List<BoardResponse.BoardListRespDTO> responseDTO = boardService.FindAll();
 
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
-
 
     // 동네생활 상세보기
     @GetMapping("/boards/{id}")
@@ -40,7 +39,6 @@ public class BoardRestController {
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
 
-
     // 동네생활 게시글 등록
     @PostMapping("/boards/write")
     public ResponseEntity<?> WriteBoard(@RequestBody BoardRequest.BoardWriteReqDTO boardWriteReqDTO) {
@@ -49,7 +47,7 @@ public class BoardRestController {
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
 
-        // 동네 생활 게시글 수정
+    // 동네 생활 게시글 수정
     @PostMapping("/boards/update/{id}")
     public ResponseEntity<?> updateBoard(@PathVariable Integer id,
             @RequestBody BoardUpdateReqDTO updateReqDTO) {
@@ -57,7 +55,6 @@ public class BoardRestController {
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
 
-        
     // 동네생활 게시글 삭제
     @PostMapping("/boards/delete/{id}")
     public ResponseEntity<?> deleteBoard(@PathVariable Integer id) {
@@ -68,4 +65,5 @@ public class BoardRestController {
             return new ResponseEntity<>("게시글 삭제 실패", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
 }
