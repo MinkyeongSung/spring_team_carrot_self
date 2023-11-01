@@ -33,12 +33,21 @@ public class BoardService {
                 .distinct()
                 .map(b -> {
                     BoardResponse.BoardListRespDTO boardDTO = new BoardResponse.BoardListRespDTO(b);
-                    List<BoardResponse.BoardListRespDTO.BoardPicDTO> boardPicDTOs = b.getBoardPics().isEmpty() ? null
+                    List<BoardResponse.BoardListRespDTO.BoardPicDTO> boardPicDTOs = b.getBoardPics().isEmpty() ? null                    
                             : b.getBoardPics().stream()
                                     .limit(1)
                                     .map(bp -> new BoardResponse.BoardListRespDTO.BoardPicDTO(bp))
                                     .collect(Collectors.toList());
                     boardDTO.setBoardPics(boardPicDTOs);
+                    // List<BoardResponse.BoardListRespDTO.BoardLikeDTO> boardLikeDTOs = b.getBoardLikes().isEmpty() ? null
+                    //         : b.getBoardLikes().stream()
+                    //                 .map(bl -> new BoardResponse.BoardListRespDTO.BoardLikeDTO(bl))
+                    //                 .collect(Collectors.toList());
+                    // int boardLikeDTOs = b.getBoardLikes().isEmpty() ? 0
+                    //         : b.getBoardLikes().stream()
+                    //                 .map(bl -> new BoardResponse.BoardListRespDTO.BoardLikeDTO(bl))
+                    //                 .count();
+                    // boardDTO.setBoardLikes(boardLikeDTOs);
                     return boardDTO;
                 })
                 .collect(Collectors.toList());
@@ -113,5 +122,28 @@ public class BoardService {
 
         // 그 다음 게시글을 삭제
         boardJPARepository.deleteById(boardId);
+    }
+
+    // 동네 생활 게시글 검색
+    public List<BoardResponse.BoardSearchRespDTO> searchBoardsByKeyword(String keyword) {
+        List<Board> boardList = boardJPARepository.findByBoardTitleContaining(keyword);
+
+        List<BoardResponse.BoardSearchRespDTO> responseDTO = boardList.stream()
+                .distinct()
+                .map(p -> {
+                    BoardResponse.BoardSearchRespDTO boardDTO = new BoardResponse.BoardSearchRespDTO(p);
+                    List<BoardResponse.BoardSearchRespDTO.BoardPicDTO> boardPicDTOs = p.getBoardPics()
+                            .isEmpty()
+                                    ? null
+                                    : p.getBoardPics().stream()
+                                            .limit(1)
+                                            .map(pp -> new BoardResponse.BoardSearchRespDTO.BoardPicDTO(pp))
+                                            .collect(Collectors.toList());
+                    boardDTO.setBoardPics((boardPicDTOs));
+                    return boardDTO;
+                })
+                .collect(Collectors.toList());
+
+        return responseDTO;
     }
 }
