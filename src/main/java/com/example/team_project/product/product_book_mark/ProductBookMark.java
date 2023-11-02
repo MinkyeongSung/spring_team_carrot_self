@@ -1,10 +1,6 @@
-package com.example.team_project.product.product_like;
+package com.example.team_project.product.product_book_mark;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import com.example.team_project.product.Product;
 import com.example.team_project.user.User;
@@ -18,8 +14,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name="product_like_tb")
-public class ProductLike {
+public class ProductBookMark {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -29,8 +26,7 @@ public class ProductLike {
     private Product product;
 
     @Builder
-
-    public ProductLike(Integer id, User user, Product product) {
+    public ProductBookMark(Integer id, User user, Product product) {
         this.id = id;
         this.user = user;
         this.product = product;

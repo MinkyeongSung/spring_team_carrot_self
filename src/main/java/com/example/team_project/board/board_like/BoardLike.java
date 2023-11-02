@@ -15,6 +15,7 @@ import javax.persistence.*;
 @Table(name="board_like_tb")
 public class BoardLike {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -24,7 +25,6 @@ public class BoardLike {
     private Board board;
 
     @Builder
-
     public BoardLike(Integer id, User user, Board board) {
         this.id = id;
         this.user = user;

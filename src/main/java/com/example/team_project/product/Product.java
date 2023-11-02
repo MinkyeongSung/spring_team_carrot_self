@@ -16,7 +16,7 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.CreationTimestamp;
 
-import com.example.team_project.product.product_like.ProductLike;
+import com.example.team_project.product.product_book_mark.ProductBookMark;
 import com.example.team_project.product.product_pic.ProductPic;
 import com.example.team_project.user.User;
 
@@ -51,17 +51,18 @@ public class Product {
     @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
     private List<ProductPic> productPics = new ArrayList<>();
 
-    @OneToMany(mappedBy = "board", fetch = FetchType.LAZY)
-    private List<ProductLike> productLikes = new ArrayList<>();
+    @OneToMany(mappedBy = "product", fetch = FetchType.LAZY)
+    private List<ProductBookMark> productBookMarks = new ArrayList<>();
 
     @Builder
-    public Product(Integer id, String productName, String productDescription, Integer productPrice,
-            Timestamp productCreatedAt, User user) {
+    public Product(Integer id, String productName, String productDescription, Integer productPrice, Timestamp productCreatedAt, User user, List<ProductPic> productPics, List<ProductBookMark> productBookMarks) {
         this.id = id;
         this.productName = productName;
         this.productDescription = productDescription;
         this.productPrice = productPrice;
         this.productCreatedAt = productCreatedAt;
         this.user = user;
+        this.productPics = productPics;
+        this.productBookMarks = productBookMarks;
     }
 }
