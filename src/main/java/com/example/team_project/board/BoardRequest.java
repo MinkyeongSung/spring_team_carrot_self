@@ -2,19 +2,15 @@ package com.example.team_project.board;
 
 import java.util.List;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import com.example.team_project.board.board_category.BoardCategory;
 import com.example.team_project.board.board_like.BoardLike;
-import com.example.team_project.board.board_pic.BoardPic;
 import com.example.team_project.user.User;
 
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import net.bytebuddy.implementation.bytecode.constant.IntegerConstant;
 
 public class BoardRequest {
 

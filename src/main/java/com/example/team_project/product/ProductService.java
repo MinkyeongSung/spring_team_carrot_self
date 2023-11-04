@@ -3,19 +3,17 @@ package com.example.team_project.product;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.persistence.EntityManager;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.team_project._core.erroes.exception.Exception404;
-import com.example.team_project.board.board_pic.BoardPic;
 import com.example.team_project.product.ProductRequest.ProductUpdateReqDTO;
 import com.example.team_project.product.product_pic.ProductPic;
 import com.example.team_project.product.product_pic.ProductPicJPARepository;
 
 import lombok.RequiredArgsConstructor;
-
-import javax.persistence.EntityManager;
-import javax.swing.text.html.parser.Entity;
 
 @Transactional
 @RequiredArgsConstructor
