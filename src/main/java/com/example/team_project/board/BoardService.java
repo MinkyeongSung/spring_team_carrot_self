@@ -170,3 +170,56 @@ public class BoardService {
     }
 
 }
+
+
+
+        ///////////////////
+        // 1. 해당 보드 id에 담긴 원래 사진들을 가져옴.
+        // List<BoardPic> boardPicsNew = boardPicJPARepository.findByBoardId(board.getId());
+        // System.out.println("테스트 0 : " + boardPicsNew);
+
+        // 2. DTO에 담겨있던 사진을 가져옴.
+        // List<String> boardPicsOld = updateReqDTO.getBoardPics();
+
+        // 3. 위에걸 스트링에 담을거임.
+        // List<String> boardPicIds = new ArrayList<>();
+
+        // for (String boardPic : boardPicsNew) {
+        //     boardPicIds.add(boardPic.getId().toString());
+
+        //     boardPicJPARepository.updateBoardPic(boardPic.getId(),
+        //             boardPicsOld.get(boardPicsNew.indexOf(boardPic))); // 수정
+        //     // boardPicJPARepository.updateBoardPic(boardPic.getId(), boardPicsOld); // 수정
+        // }
+        // for (BoardPic boardPicEntity : boardPicsNew) {
+        //     // String boardPic = boardPicEntity.getBoardPicUrl(); // 필드 이름을 변경해야 함
+        //     // boardPicIds.add(boardPic);
+
+        //     boardPicJPARepository.updateBoardPic(boardPicEntity.getId(), boardPicsOld.get(boardPicsNew.indexOf(boardPicEntity))); // 수정
+        // }
+        ///////////////////////
+
+        // List<String> boardPicIds = new ArrayList<>();
+        // for (String boardPic3 : boardPics) {
+        // boardPicIds.add(boardPic3.getId().toString());
+        // System.out.println("테스트 2 " + boardPic3.getId());
+        // System.out.println("테스트 2 " + boardPic3.getBoardPicUrl());
+        // boardPicJPARepository.updateBoardPic(boardPic3.getId(),
+        // boardPic3.getBoardPicUrl());
+        // }
+
+        // List<String> boardPicIds = new ArrayList<>();
+        // for (String boardPic : boardPicIds) {
+        // BoardPic boardPicEntity = boardPicJPARepository.save(boardPicEntity);
+        // }
+        // Integer boardCategoryId = updateReqDTO.getBoardCategoryId();
+
+        // // 1. 해당 보드 id에 담긴 기존 사진들의 정보를 담음.
+        // List<BoardPic> boardPicsNew = boardPicJPARepository.findByBoardId(board.getId());
+        // // 2. DTO에서 가져온거 담음.
+        // List<String> boardPics = updateReqDTO.getBoardPics();
+
+        // for (BoardPic boardPic : boardPics) {
+
+        //     boardPicJPARepository.updateBoardPic(board.getId(), boardPic);
+        // }
