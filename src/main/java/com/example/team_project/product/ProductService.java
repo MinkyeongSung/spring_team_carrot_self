@@ -3,17 +3,20 @@ package com.example.team_project.product;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.persistence.EntityManager;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.team_project._core.erroes.exception.Exception404;
+
 import com.example.team_project.product.ProductRequest.ProductUpdateReqDTO;
+import com.example.team_project.product.product_book_mark.ProductBookmark;
+import com.example.team_project.product.product_book_mark.ProductBookmarkJPARepository;
 import com.example.team_project.product.product_pic.ProductPic;
 import com.example.team_project.product.product_pic.ProductPicJPARepository;
 
 import lombok.RequiredArgsConstructor;
+
+import javax.persistence.EntityManager;
 
 @Transactional
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class ProductService {
 
     private final ProductJPARepository productJPARepository;
     private final ProductPicJPARepository productPicJPARepository;
+    private final ProductBookmarkJPARepository productBookMarkJPARepository;
     private final EntityManager em;
 
     // 상품 리스트
@@ -101,19 +105,17 @@ public class ProductService {
         return new ProductResponse.ProductUpdateRespDTO(product, productPicsUpdate);
     }
 
-    // @Transactional
-    // public void deleteProduct(int productId) {
-    // // 먼저 해당 게시글의 이미지를 삭제
-    // List<ProductPic> productPics =
-    // productPicJPARepository.findByProduct_Id(productId);
-    // for (ProductPic productPic : productPics) {
-    // productPicJPARepository.delete(productPic);
-    // }
-
-    // // 그 다음 게시글을 삭제
-    // productJPARepository.deleteById(productId);
-    // }
-    // }
+    @Transactional
+    public void deleteProduct(int productId) {
+        // 먼저 해당 게시글의 이미지를 삭제
+        // List<ProductPic> productPics =
+        // productPicJPARepository.findByProductId(productId);
+        // for (ProductPic productPic : productPics) {
+        // productPicJPARepository.delete(productPic);
+        // }
+        // 그 다음 게시글을 삭제
+        productJPARepository.deleteById(productId);
+    }
 
     // 상품 검색
     public List<ProductResponse.ProductSearchRespDTO> searchProductsByKeyword(String keyword) {
@@ -138,4 +140,27 @@ public class ProductService {
         return responseDTO;
     }
 
+    // 상품북마크
+    public ProductResponse.ProductBookMarkRespDTO bookmarkProducts(
+            ProductRequest.ProductBookMarkReqDTO productBookMarkReqDTO) {
+        System.out.println("DTO 서비스 : " + productBookMarkReqDTO);
+
+        ProductBookmark productBookMark = productBookMarkJPARepository.save(productBookMarkReqDTO.toEntity());
+        return new ProductResponse.ProductBookMarkRespDTO(productBookMark);
+    }
+
+    // // 상품북마크삭제
+    // @Transactional
+    // public void deleteLikeProducts(Integer productId, Integer id) {
+    // productBookMarkJPARepository.deleteById(id);
+    // }
+
+    @Transactional
+    public ProductResponse.DeleteBookmarkRespDTO DeleteBookmarkProducts(Integer id) {
+        // ProductBookMark bookMark =
+        // productBookMarkJPARepository.findById(id).orElseThrow(() -> new
+        // Exception404("없어"));
+        productBookMarkJPARepository.deleteById(id);
+        return null;
+    }
 }

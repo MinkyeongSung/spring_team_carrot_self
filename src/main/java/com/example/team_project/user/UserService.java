@@ -1,27 +1,25 @@
 package com.example.team_project.user;
 
-import com.example.team_project._core.utils.JwtTokenUtils;
-import com.example.team_project.board.Board;
-import com.example.team_project.board.BoardJPARepository;
-import com.example.team_project.reply.Reply;
-import com.example.team_project.reply.ReplyJPARepository;
-import com.example.team_project.user.UserResponse.UserUpdateRespDTO;
-
-import lombok.RequiredArgsConstructor;
-
 import java.util.ArrayList;
-import java.util.Optional;
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import javax.persistence.EntityManager;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.team_project._core.erroes.exception.Exception400;
 import com.example.team_project._core.erroes.exception.Exception404;
+import com.example.team_project._core.utils.JwtTokenUtils;
+import com.example.team_project.board.Board;
+import com.example.team_project.board.BoardJPARepository;
+import com.example.team_project.product.Product;
+import com.example.team_project.product.ProductJPARepository;
+import com.example.team_project.reply.Reply;
+import com.example.team_project.reply.ReplyJPARepository;
 
-import javax.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 
 @Transactional
 @RequiredArgsConstructor
@@ -32,6 +30,7 @@ public class UserService {
     private final EntityManager em;
     private final BoardJPARepository boardJPARepository;
     private final ReplyJPARepository replyJPARepository;
+    private final ProductJPARepository productJPARepository;
 
     // 회원가입
     @Transactional
@@ -73,10 +72,6 @@ public class UserService {
         userJPARepository.mUpdateUser(userId, userUpdateReqDTO.getUsername(),
                 userUpdateReqDTO.getPassword(), userUpdateReqDTO.getNickname());
 
-        System.out.println("user 값은? " + user.getEmail());
-        System.out.println("user 값은? " + user.getUsername());
-        System.out.println("user 값은? " + user.getNickname());
-
         // 변경 내용을 데이터베이스에 반영
         userJPARepository.flush();
 
@@ -90,94 +85,39 @@ public class UserService {
     }
 
     // 나의 당근 - 동네생활 내가 쓴글, 댓글
-    public UserResponse.MyWriteRespDTO myboards(int id) {
-        // // 글쓴이의 유저아이디가 일치하는 보드들 들고오기
-        // List<Board> boardList = boardJPARepository.findbyUserId(1);
-
-        // // 내가 쓴글 스트림
-        // List<UserResponse.MyWriteRespDTO.WriteBoardsDTO> responseBoardWriteDTO =
-        // boardList.stream()
-        // .distinct()
-        // .map(b -> {
-        // UserResponse.MyWriteRespDTO.WriteBoardsDTO writeDTO = new
-        // UserResponse.MyWriteRespDTO.WriteBoardsDTO(
-        // b);
-        // List<UserResponse.MyWriteRespDTO.WriteBoardsDTO.BoardPicDTO> boardPicDTO =
-        // b.getBoardPics()
-        // .isEmpty() ? null
-        // : b.getBoardPics().stream()
-        // .limit(1)
-        // .map(bp -> new UserResponse.MyWriteRespDTO.WriteBoardsDTO.BoardPicDTO(bp))
-        // .collect(Collectors.toList());
-        // writeDTO.setBoardPics(boardPicDTO);
-
-        // return writeDTO;
-        // })
-        // .collect(Collectors.toList());
-
-        // // 1. 유저아이디가 일치하는 댓글을 찾기 (보드아이디도 알수있음.)
-        // List<Reply> replyList = replyJPARepository.findbyUserId(1);
-
-        // List<UserResponse.MyWriteRespDTO.WriteBoardsDTO> responseRDTO =
-        // replyList.stream()
-        // .map(r -> new UserResponse.MyWriteRespDTO.WriteBoardsDTO(r.getBoard()))
-        // .collect(Collectors.toList());
+    public UserResponse.MyWriteRespDTO myBoards(int id) {
 
         // 글쓴이의 유저아이디가 일치하는 보드들 들고오기
-        List<Board> boardList = boardJPARepository.findbyUserId(1);
-
-        // 내가 쓴글 스트림
-        List<UserResponse.MyWriteRespDTO.WriteBoardsDTO> board = boardList.stream()
-                .distinct()
-                .map(b -> {
-                    UserResponse.MyWriteRespDTO.WriteBoardsDTO writeDTO = new UserResponse.MyWriteRespDTO.WriteBoardsDTO(
-                            b);
-                    List<UserResponse.MyWriteRespDTO.WriteBoardsDTO.BoardPicDTO> boardPicDTO = b.getBoardPics()
-                            .isEmpty() ? null
-                                    : b.getBoardPics().stream()
-                                            .limit(1)
-                                            .map(bp -> new UserResponse.MyWriteRespDTO.WriteBoardsDTO.BoardPicDTO(bp))
-                                            .collect(Collectors.toList());
-                    writeDTO.setBoardPics(boardPicDTO);
-
-                    return writeDTO;
-                })
-                .collect(Collectors.toList());
+        List<Board> boardWriteList = boardJPARepository.findbyUserId(1);
 
         // 유저아이디가 일치하는 댓글을 찾기 (보드아이디도 알수있음.)
         List<Reply> replyList = replyJPARepository.findbyUserId(1);
-
-        List<Board> boardList1 = new ArrayList<>();
+        // 새로운 객체에 List<Board>형태로 담기
+        List<Board> replyWriteList = new ArrayList<>();
 
         for (Reply reply : replyList) {
             Integer boardId = reply.getBoard().getId();
-            Board board2 = boardJPARepository.findById(boardId).orElse(null); // 또는 findById 메서드를 사용하여 Board를 가져옵니다.
-            if (board2 != null) {
-                boardList1.add(board2);
+            Board replyboard = boardJPARepository.findById(boardId).orElse(null);
+            if (replyboard != null) {
+                replyWriteList.add(replyboard);
             }
         }
+        return new UserResponse.MyWriteRespDTO(boardWriteList, replyWriteList);
+    }
 
-        // // 이걸 바탕으로 List<Board>형식으로 담기.
-        // List<Board> reply = replyList.stream()
-        // .map(rr -> New Board(r.getBoard().g))
+    // 나의 당근 - 판매목록
+    public UserResponse.MyProductsListRespDTO saleproducts(Integer id) {
 
-        // //??
-        // List<UserResponse.MyWriteRespDTO.WriteBoardsDTO> reply = replyList.stream()
-        // .map(r -> new UserResponse.MyWriteRespDTO.WriteBoardsDTO(r.getBoard()))
-        // .collect(Collectors.toList());
+        // 유저아이디가 일치하는 상품들 들고오기
+        List<Product> sales = productJPARepository.findByUserId(1);
 
-        // List<UserResponse.MyWriteRespDTO> responseDTO = Stream
-        // .concat(responseBoardWriteDTO.stream(), responseRDTO.stream())
-        // .collect(Collectors.toList());
+        List<Product> complements = productJPARepository.findByUserId(1);
 
-        // List<UserResponse.MyWriteRespDTO> responseDTO = new
-        // ArrayList<>(responseBoardWriteDTO);
-        // responseDTO.addAll(responseRDTO);
+        return new UserResponse.MyProductsListRespDTO(sales, complements);
+    }
 
-        // return new UserResponse.MyWriteRespDTO(board, reply);
+    // 나의 당근 - 구매목록
+    public void buyproducts(Integer id) {
 
-        // UserResponse.MyWriteRespDTO 객체 생성
-
-        return new UserResponse.MyWriteRespDTO(boardList, boardList1);
     }
 }

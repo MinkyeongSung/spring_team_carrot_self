@@ -4,7 +4,7 @@ import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.example.team_project.product.product_book_mark.ProductBookMark;
+import com.example.team_project.product.product_book_mark.ProductBookmark;
 import com.example.team_project.product.product_pic.ProductPic;
 import com.example.team_project.user.User;
 
@@ -24,6 +24,7 @@ public class ProductResponse {
         private Timestamp productCreatedAt;
         private UserDTO user;
         private List<ProductPicDTO> productPics;
+        private boolean saleStatus;
 
         public ProductListRespDTO(Product product) {
             this.id = product.getId();
@@ -31,11 +32,12 @@ public class ProductResponse {
             this.productPrice = product.getProductPrice();
             this.productCreatedAt = product.getProductCreatedAt();
             this.user = new UserDTO(product.getUser());
-            this.productLikes = product.getProductBookMarks().stream().map(bl -> new ProductLikeDTO(bl)).count();
+            this.productLikes = product.getProductBookmarks().stream().map(bl -> new ProductLikeDTO(bl)).count();
             this.productPics = product.getProductPics().stream()
                     .limit(1)
                     .map(p -> new ProductPicDTO(p))
                     .collect(Collectors.toList());
+            this.saleStatus = product.isSaleStatus();
         }
 
         @Getter
@@ -68,7 +70,7 @@ public class ProductResponse {
             private Integer likeId;
             private Integer userId;
 
-            public ProductLikeDTO(ProductBookMark boardLike) {
+            public ProductLikeDTO(ProductBookmark boardLike) {
                 this.likeId = likeId;
                 this.userId = userId;
             }
@@ -82,22 +84,23 @@ public class ProductResponse {
         private Integer id;
         private String productName;
         private String productDescription;
-        private Integer productPrice;        
+        private Integer productPrice;
         private long productLikes;
         private Timestamp productCreatedAt;
         private UserDTO user;
         private List<ProductPicDTO> productPics;
+        private boolean saleStatus;
 
         public ProductDetailRespDTO(Product product, List<ProductPic> productPics) {
             this.id = product.getId();
             this.productName = product.getProductName();
             this.productDescription = product.getProductDescription();
-            this.productPrice = product.getProductPrice();            
+            this.productPrice = product.getProductPrice();
             this.productCreatedAt = product.getProductCreatedAt();
             this.user = new UserDTO(product.getUser());
-            this.productLikes = product.getProductBookMarks().stream().map(bl -> new ProductLikeDTO(bl)).count();
+            this.productLikes = product.getProductBookmarks().stream().map(bl -> new ProductLikeDTO(bl)).count();
             this.productPics = productPics.stream().map(t -> new ProductPicDTO(t)).collect(Collectors.toList());
-
+            this.saleStatus = product.isSaleStatus();
         }
 
         @Getter
@@ -134,7 +137,7 @@ public class ProductResponse {
             private Integer likeId;
             private Integer userId;
 
-            public ProductLikeDTO(ProductBookMark boardLike) {
+            public ProductLikeDTO(ProductBookmark boardLike) {
                 this.likeId = likeId;
                 this.userId = userId;
             }
@@ -152,6 +155,7 @@ public class ProductResponse {
         private Timestamp createdAt;
         private UserDTO user;
         private List<ProductPicDTO> productPics;
+        private boolean saleStatus;
 
         public ProductWriteRespDTO(Product product, List<ProductPic> productPics) {
             this.id = product.getId();
@@ -161,6 +165,7 @@ public class ProductResponse {
             this.createdAt = product.getProductCreatedAt();
             this.user = new UserDTO(product.getUser());
             this.productPics = productPics.stream().map(p -> new ProductPicDTO(p)).collect(Collectors.toList());
+            this.saleStatus = product.isSaleStatus();
         }
 
         @Getter
@@ -202,6 +207,7 @@ public class ProductResponse {
         private Integer productPrice;
         private Timestamp createdAt;
         private List<ProductPicDTO> productPics;
+        private boolean saleStatus;
 
         public ProductUpdateRespDTO(Product product, List<ProductPic> productPics) {
             this.id = product.getId();
@@ -210,6 +216,7 @@ public class ProductResponse {
             this.productPrice = product.getProductPrice();
             this.createdAt = product.getProductCreatedAt();
             this.productPics = productPics.stream().map(p -> new ProductPicDTO(p)).collect(Collectors.toList());
+            this.saleStatus = product.isSaleStatus();
         }
 
         @Getter
@@ -272,5 +279,24 @@ public class ProductResponse {
                 this.location = user.getLocation();
             }
         }
+    }
+
+    // 상품북마크
+    @Getter
+    @Setter
+    public static class ProductBookMarkRespDTO {
+        private Integer bookmarkId;
+        private Integer productId;
+
+        public ProductBookMarkRespDTO(ProductBookmark productBookMark) {
+            this.bookmarkId = productBookMark.getId();
+            this.productId = productBookMark.getProduct().getId();
+        }
+    }
+
+    @Getter
+    @Setter
+    public static class DeleteBookmarkRespDTO {
+
     }
 }

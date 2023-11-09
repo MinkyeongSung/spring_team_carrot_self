@@ -1,6 +1,11 @@
 package com.example.team_project.product;
 
+import java.util.List;
+
+import javax.servlet.http.HttpSession;
+
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -13,31 +18,30 @@ import com.example.team_project.product.ProductRequest.ProductUpdateReqDTO;
 
 import lombok.RequiredArgsConstructor;
 
-import java.util.List;
-
 @RequiredArgsConstructor
 @RestController
 public class ProductRestController {
 
     private final ProductService productService;
+    private final HttpSession session;
 
     // 상품 목록보기
     @GetMapping("/products")
-    public ResponseEntity<?> ProductList() {
+    public ResponseEntity<?> productList() {
         List<ProductResponse.ProductListRespDTO> responseDTO = productService.findAll();
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
 
     // 상품상세보기
     @GetMapping("/products/{id}")
-    public ResponseEntity<?> ProductDetail(@PathVariable Integer id) {
+    public ResponseEntity<?> productDetail(@PathVariable Integer id) {
         ProductResponse.ProductDetailRespDTO responseDTO = productService.FindById(id);
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
 
     // 상품 등록
     @PostMapping("/products/write")
-    public ResponseEntity<?> WriteProduct(@RequestBody ProductRequest.ProductWriteReqDTO productWriteReqDTO) {
+    public ResponseEntity<?> writeProduct(@RequestBody ProductRequest.ProductWriteReqDTO productWriteReqDTO) {
         ProductResponse.ProductWriteRespDTO responseDTO = productService.saveProductWithProductPics(productWriteReqDTO);
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
@@ -53,15 +57,11 @@ public class ProductRestController {
     }
 
     // 상품 삭제
-    // @PostMapping("/productDelete/{id}")
-    // public ResponseEntity<?> deleteProduct(@PathVariable Integer id) {
-    // try {
-    // productService.deleteProduct(id);
-    // return ResponseEntity.ok().body(ApiUtils.success("ok"));
-    // } catch (Exception e) {
-    // return new ResponseEntity<>("게시글 삭제 실패", HttpStatus.INTERNAL_SERVER_ERROR);
-    // }
-    // }
+     @DeleteMapping("/products/{id}")
+     public ResponseEntity<?> DeleteProduct(@PathVariable Integer id) {
+     productService.deleteProduct(id);
+     return ResponseEntity.ok().body(ApiUtils.success("상품 삭제 완료"));
+     }
 
     // 상품 검색
     @GetMapping("/products/search")
@@ -69,4 +69,20 @@ public class ProductRestController {
         List<ProductResponse.ProductSearchRespDTO> responseDTO = productService.searchProductsByKeyword(keyword);
         return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
     }
+
+    // 상품 북마크
+    @PostMapping("/products/bookmark")
+    public ResponseEntity<?> bookmarkProducts(@RequestBody ProductRequest.ProductBookMarkReqDTO productBookMarkReqDTO) {
+        System.out.println("dto 값 잘 들어오지? : " + productBookMarkReqDTO);
+        ProductResponse.ProductBookMarkRespDTO responseDTO = productService.bookmarkProducts(productBookMarkReqDTO);
+        return ResponseEntity.ok().body(ApiUtils.success(responseDTO));
+    }
+
+    // 상품 북마크 해제
+    @DeleteMapping("/products/bookmark/{id}")
+    public ResponseEntity<?> bookmarkDelete(@PathVariable Integer id){
+        productService.DeleteBookmarkProducts(id);
+        return ResponseEntity.ok().body(ApiUtils.success("북마크 해제 완료"));
+    }
+
 }
