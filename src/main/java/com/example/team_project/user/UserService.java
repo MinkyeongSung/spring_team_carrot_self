@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,17 +61,22 @@ public class UserService {
 
         String jwt = JwtTokenUtils.create(user);
 
+        // 세션
+        // HttpSession session = request.getSession();
+        // session.setAttribute("userId", user.getId());
+
+
         return new UserResponse.UserLoginRespDTO(jwt, user);
     }
 
     // 회원정보수정
     @Transactional
     public UserResponse.UserUpdateRespDTO update(UserRequest.UserUpdateReqDTO userUpdateReqDTO, Integer userId) {
-        User user = userJPARepository.findByUsername(userUpdateReqDTO.getUsername()); // 영속화
-        if (user.getUsername() == null) {
+        User user = userJPARepository.findByNickname(userUpdateReqDTO.getNickname()); // 영속화
+        if (user.getNickname() == null) {
             throw new Exception404("사용자를 찾을 수 없습니다.");
         }
-        userJPARepository.mUpdateUser(userId, userUpdateReqDTO.getUsername(),
+        userJPARepository.mUpdateUser(userId, userUpdateReqDTO.getUserPicUrl(),
                 userUpdateReqDTO.getPassword(), userUpdateReqDTO.getNickname());
 
         // 변경 내용을 데이터베이스에 반영

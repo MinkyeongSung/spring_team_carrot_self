@@ -15,23 +15,27 @@ public class CustomerService {
 
     private final CustomerJPARepository customerJPARepository;
 
-    public List<CustomerResponse.CustomerListRespDTO> findAll(){
+    public List<CustomerResponse.CustomerListRespDTO> findAll() {
 
         return null;
     }
 
-    public CustomerResponse.CustomerDeleteRespDTO findById(){
+    public CustomerResponse.CustomerDeleteRespDTO findById() {
 
         return null;
     }
 
-    public CustomerResponse.CustomerWriteRespDTO save(){
+    // 문의글등록
+    public CustomerResponse.CustomerWriteRespDTO save(CustomerRequest.CustomerWriteReqDTO customerWriteReqDTO) {
+        Customer responseDTO = customerJPARepository.save(customerWriteReqDTO.toEntity());
 
-        return null;
+        // Customer responseDTO = customerJPARepository.findByCustomerId(customer.getId());
+        return new CustomerResponse.CustomerWriteRespDTO(responseDTO);
     }
 
-    public CustomerResponse.CustomerDeleteRespDTO delete(){
-
+    // 문의글삭제
+    public CustomerResponse.CustomerDeleteRespDTO delete(Integer id) {
+        customerJPARepository.deleteById(id);
         return null;
     }
 

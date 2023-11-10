@@ -55,13 +55,13 @@ public class UserRequest {
     @Setter
     @ToString
     public static class UserUpdateReqDTO {
-        private String username;
+        private String userPicUrl;
         private String password;
         private String nickname;
 
         public User toEntity() {
             return User.builder()
-                    .username(username)
+                    .username(userPicUrl)
                     .nickname(nickname)
                     .password(password)
                     .build();
