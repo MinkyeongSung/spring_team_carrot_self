@@ -1,13 +1,13 @@
 package com.example.team_project.user;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.Size;
-
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 public class UserRequest {
 
@@ -46,6 +46,7 @@ public class UserRequest {
                     .username(username)
                     .email(email)
                     .password(password)
+                    .userPicUrl("./images/default-profile.png")
                     .location(location)
                     .build();
         }
@@ -56,12 +57,12 @@ public class UserRequest {
     @ToString
     public static class UserUpdateReqDTO {
         private String userPicUrl;
-        private String password;
         private String nickname;
+        private String password;
 
         public User toEntity() {
             return User.builder()
-                    .username(userPicUrl)
+                    .userPicUrl(userPicUrl)
                     .nickname(nickname)
                     .password(password)
                     .build();

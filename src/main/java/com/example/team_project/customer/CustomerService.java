@@ -27,10 +27,9 @@ public class CustomerService {
 
     // 문의글등록
     public CustomerResponse.CustomerWriteRespDTO save(CustomerRequest.CustomerWriteReqDTO customerWriteReqDTO) {
-        Customer responseDTO = customerJPARepository.save(customerWriteReqDTO.toEntity());
+        Customer customer = customerJPARepository.save(customerWriteReqDTO.toEntity());
+        return new CustomerResponse.CustomerWriteRespDTO(customer);
 
-        // Customer responseDTO = customerJPARepository.findByCustomerId(customer.getId());
-        return new CustomerResponse.CustomerWriteRespDTO(responseDTO);
     }
 
     // 문의글삭제

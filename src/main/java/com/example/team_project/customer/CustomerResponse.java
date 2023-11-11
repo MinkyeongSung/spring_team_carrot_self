@@ -32,26 +32,13 @@ public class CustomerResponse {
 
         private String content;
 
-        private UserDTO user;
+        private User user;
 
         public CustomerWriteRespDTO(Customer customer) {
             this.id = customer.getId();
             this.title = customer.getTitle();
             this.content = customer.getContent();
-            this.user = new UserDTO(customer.getUser());
-        }
-
-        @Getter
-        @Setter
-        public static class UserDTO {
-            private Integer userId;
-            private String username;
-
-            public UserDTO(User user) {
-                this.userId = user.getId();
-                this.username = user.getUsername();
-            }
-
+            this.user = customer.getUser();
         }
 
     }

@@ -20,17 +20,14 @@ public class CustomerRequest {
 
         private String content;
 
-        private Integer userId;
-
-        private String username;
+        // private User user;
 
         public Customer toEntity() {
             return Customer.builder()
                     .id(id)
                     .title(title)
                     .content(content)
-                    .user(User.builder().id(getUserId()).build())
-                    .user(User.builder().username(getUsername()).build())
+                    // .user(User.builder().id(getId()).build())
                     .build();
         }
 
